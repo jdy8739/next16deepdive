@@ -27,6 +27,22 @@ const db = {
       createdAt: new Date().toISOString(),
     },
   ],
+  cartItems: [
+    {
+      id: "1",
+      product: "soup",
+      descriptions: "tasty soup",
+      maxStock: 8,
+      count: 1,
+    },
+    {
+      id: "2",
+      product: "bread",
+      descriptions: "fresh bread",
+      maxStock: 5,
+      count: 1,
+    },
+  ],
 };
 
 export default db;
