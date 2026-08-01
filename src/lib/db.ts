@@ -19,6 +19,14 @@ const db = {
       updatedAt: new Date().toISOString(),
     },
   ],
+  mentoringApplications: [
+    {
+      id: "1",
+      name: "홍길동",
+      subject: "Next.js 정적 캐시 파괴 메커니즘",
+      createdAt: new Date().toISOString(),
+    },
+  ],
 };
 
 export default db;
