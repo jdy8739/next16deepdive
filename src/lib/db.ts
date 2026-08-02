@@ -62,6 +62,13 @@ const db = {
     { id: "s4", boardId: "2", content: "API 문서를 더 풍부하게.", createdAt: "2026-07-04T13:20:00.000Z" },
     { id: "s5", boardId: "2", content: "오프라인 모드를 지원해 주세요.", createdAt: "2026-07-05T15:05:00.000Z" },
   ],
+  courseReviews: [
+    { id: "r1", courseId: "1", author: "김민수", rating: 5, content: "Next.js 캐시 원리가 확실히 이해됐습니다.", createdAt: "2026-06-10T09:00:00.000Z" },
+    { id: "r2", courseId: "1", author: "이서연", rating: 4, content: "실전 예제가 정말 유용했어요.", createdAt: "2026-06-12T14:30:00.000Z" },
+    { id: "r3", courseId: "1", author: "박준호", rating: 5, content: "강의 속도와 깊이가 완벽했습니다.", createdAt: "2026-06-15T11:20:00.000Z" },
+    { id: "r4", courseId: "2", author: "최유진", rating: 4, content: "use cache 실습이 빛을 발하네요.", createdAt: "2026-06-18T16:45:00.000Z" },
+    { id: "r5", courseId: "2", author: "정도현", rating: 5, content: "실무에서 바로 써먹을 수 있습니다.", createdAt: "2026-06-20T10:05:00.000Z" },
+  ],
 };
 
 export default db;
