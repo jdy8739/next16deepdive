@@ -43,6 +43,11 @@ const db = {
       count: 1,
     },
   ],
+  auth: [
+    {
+      authCode: "ARCHITECT_2026",
+    },
+  ],
 };
 
 export default db;
