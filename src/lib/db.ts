@@ -55,6 +55,13 @@ const db = {
     "아키텍트는 미래를 설계하는 청사진가다.",
     "둔한 도구보다 날카로운 사고가 먼저다.",
   ],
+  boardSuggestions: [
+    { id: "s1", boardId: "1", content: "다크모드를 지원해 주세요.", createdAt: "2026-07-01T09:00:00.000Z" },
+    { id: "s2", boardId: "1", content: "페이지네이션 추가가 필요합니다.", createdAt: "2026-07-02T10:30:00.000Z" },
+    { id: "s3", boardId: "1", content: "단축키를 개선해 주세요.", createdAt: "2026-07-03T11:45:00.000Z" },
+    { id: "s4", boardId: "2", content: "API 문서를 더 풍부하게.", createdAt: "2026-07-04T13:20:00.000Z" },
+    { id: "s5", boardId: "2", content: "오프라인 모드를 지원해 주세요.", createdAt: "2026-07-05T15:05:00.000Z" },
+  ],
 };
 
 export default db;
