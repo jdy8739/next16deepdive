@@ -1,40 +1,49 @@
 # next16deepdive
 
-Next.js 16 **Cache Components(`use cache`)** 공부용 데모 레포.
+Next.js 16의 `use cache`(Cache Components)를 공부하기 위해 만든 데모 레포입니다. 웹사이트를 만드는 게 목적이 아니라, 화면 하나하나에 Next.js 기능 하나씩을 심어서 "이게 실제로 어떻게 동작하는가"를 뜯어보는 데 집중했어요.
 
-- Next.js 16.2.12 · React 19 · TypeScript · Tailwind v4 · pnpm
-- `cacheComponents: true`
+**스택**은 Next.js 16.2.12, React 19, TypeScript, Tailwind v4, pnpm입니다. 캐시 기능을 켜두기 위해 `next.config.ts`에 `cacheComponents: true`가 들어가 있습니다.
 
-## 시작
+## 시작하기
 
 ```bash
 pnpm install
-pnpm dev     # http://localhost:3000
+pnpm dev       # http://localhost:3000
 pnpm build && pnpm start
 ```
 
-## 라우트
+---
 
-**캐시**
-- `/exchange` — `use cache` 결빙: 최초 0.5s 조회 후 새로고침해도 0s
+## 무엇을 시연하나
 
-**서버 액션**
-- `/prompts` — 서버 액션 CRUD
-- `/security/clearance` — `useActionState` 폼 검증
-- `/mentoring` — 폼 → 서버 액션 → redirect
-- `/admin/login` — 쿠키 인증 (코드 `ARCHITECT_2026`)
+### 캐시가 화면을 얼리는 순간
 
-**캐시 무효화 (무기)**
-- `/board/[id]` — 서버 액션 조회/삭제, JS 없는 HTML Form(=`bind`)
-- `/course/[id]` — `revalidateTag`(SWR) vs `updateTag`(⚡ 즉시 동기 붕괴)
+`/exchange` 화면을 열어보면 처음 한 번은 0.5초쯤 걸려서 데이터를 가져옵니다. 하지만 그다음부터는 아무리 새로고침을 연타해도 화면이 곧바로 뜹니다. 이것이 `"use cache"`가 데이터가 아니라 **렌더 결과(화면) 자체를 얼려두는** 동작입니다.
 
-**라우팅**
-- `/portal`, `/portal/settings` — 병렬 라우트 + 슬롯별 독립 로딩 + `default.tsx` 폴백
-- `/feed`, `/mentor/[id]` — 인터셉트 라우트 `@modal` 병렬 슬롯으로 `<dialog>` 모달 오버레이
+### 자바스크립트 없이 지우는 서버 액션
 
-## 메모
+`/board/[id]`는 버튼 하나가 곧 서버 액션입니다. `<form>`과 `bind`를 연결해 두어서, 클릭하면 브라우저의 기본 폼 제출만으로 서버에 삭제 요청이 갑니다. 자바스크립트 로직 없이도 동작하는 핵심 예시입니다.
 
-- `"use cache"` + `cacheLife` → **컴포넌트 결과 자체**를 결빙.
-- 캐시 무효화: `revalidatePath`(다이/경로 즉시) · `revalidateTag(tag,"max")`(SWR 배경 갱신) · `updateTag`(서버 액션만, 즉시 동기 만료).
-- 조회/삭제를 **둘 다 서버 액션**으로 하면 같은 db 인스턴스를 써서 실측 문제(인스턴스 분리)를 피함. `src/lib/db.ts` 공용.
-- `next dev` = Turbopack. 일부 라우트는 데모용 인위 지연 포함.
+### 부드럽게 vs 즉시 — 캐시 깨는 두 가지 방식
+
+`/course/[id]`에서는 캐시 무효화의 두 극단을 나란히 볼 수 있습니다. `revalidateTag`는 옛 화면을 보여주면서 배경에서 천천히 새 데이터로 바꾸고(SWR), `updateTag`는 버튼을 누르는 바로 그 순간 캐시를 동기적으로 무너뜨리며 화면에 즉시 반영합니다. "일반 리뷰 삭제"와 "악성 리뷰 즉시 삭제"로 나뉘어 있어 대비가 확실합니다.
+
+### 조각마다 따로 로딩되는 병렬 라우트
+
+`/portal`은 하나의 페이지를 메인/알림/Q&A 세 조각으로 나눕니다. 알림은 1초, Q&A는 2초 걸리지만, 서로 전혀 기다리지 않아요. 느린 조각만 스피너를 돌리고 나머지는 먼저 뜹니다. `/portal/settings`로 들어가면 하드 새로고침 등으로 슬롯 매칭이 흔들려도 `default.tsx`가 404 대신 뼈대를 지켜주는 폴백 동작을 확인할 수 있습니다.
+
+### 화면을 바꾸지 않고 위에 띄우는 인터셉트
+
+`/feed`에서 멘토 카드를 누르면 페이지 이동 없이 `@modal` 병렬 슬롯이 모달을 그 위에 겹칩니다. `<dialog>`를 쓰고 배경은 어둡게 처리해 아래쪽이 클릭되지 않게 막았어요. `/mentor/[id]`를 직접 여는 경우에는 전체 페이지로 만나게 됩니다.
+
+---
+
+## 짚고 갈 개념 세 가지
+
+**첫째**, `"use cache"`는 데이터가 아니라 화면 결과물을 캐시합니다. 그래서 "다시 그리지 않고 그대로 재사용"하는 결빙의 느낌을 이해하는 게 중요합니다.
+
+**둘째**, 캐시를 깨는 방법은 용도가 다릅니다. `revalidatePath`는 경로 전체를 즉시 재검증하고, `revalidateTag(tag, "max")`는 태그만 골라 옛 화면을 보여주며 뒤에서 갱신하며, `updateTag`는 서버 액션에서만 쓸 수 있는 즉각적 만료입니다.
+
+**셋째**, 조회와 삭제를 둘 다 서버 액션으로 돌리면 두 동작이 같은 db 인스턴스를 바라봐서, "지웠는데 화면에 안 사라지는" 꼬임을 피할 수 있습니다. 데모의 모의 데이터는 `src/lib/db.ts`에 모여 있습니다.
+
+`next dev`는 Turbopack을 사용하고, 일부 라우트는 데모를 위해 의도적으로 지연(0.5초·1초·2초)을 넣어 두었습니다.
