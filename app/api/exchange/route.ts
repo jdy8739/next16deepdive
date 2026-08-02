@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic";
+// NOTE(cacheComponents): `export const dynamic` 는 `nextConfig.cacheComponents` 와
+// 호환되지 않아 제거됨. 요청마다 랜덤 환율을 동적으로 응답한다.
 
 const USD_KRW_BASE = 1370;
 

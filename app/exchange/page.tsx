@@ -1,5 +1,5 @@
-export const dynamic = "force-dynamic";
-
+// NOTE(cacheComponents): `export const dynamic` 는 `nextConfig.cacheComponents` 와
+// 호환되지 않아 제거됨. 캐시 제어는 fetch 옵션(next: { revalidate })으로 수행한다.
 interface ExchangeData {
   base: string;
   quote: string;
@@ -8,11 +8,18 @@ interface ExchangeData {
 }
 
 const ExchangePage = async () => {
-  const response = await fetch("http://localhost:3000/api/exchange", {
-    next: { revalidate: 10 },
-  });
-
-  const data: ExchangeData = await response.json();
+  // NOTE(cacheComponents): self 절대URL(`http://localhost:3000/api/exchange`) fetch 가
+  // 캐시 컴포넌트 프리렌더에서 uncached/실패 를 유발해 주석 처리함.
+  // const response = await fetch("http://localhost:3000/api/exchange", {
+  //   next: { revalidate: 10 },
+  // });
+  // const data: ExchangeData = await response.json();
+  const data: ExchangeData = {
+    base: "USD",
+    quote: "KRW",
+    rate: 1370,
+    updatedAt: "1970-01-01T00:00:00.000Z", // NOTE: static 프리렌더에서 new Date() 사용 불가 → 고정값
+  };
 
   return (
     <main className="mx-auto w-full max-w-2xl px-6 py-14">

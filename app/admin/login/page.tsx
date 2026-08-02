@@ -1,12 +1,29 @@
+import { Suspense } from "react";
 import { requestLogin } from "@/app/actions";
 
-const LoginPage = async ({
+// searchParams(uncached data)는 Suspense 안에서만 접근해야 한다.
+const ErrorNotice = async ({
   searchParams,
 }: {
   searchParams: Promise<{ error?: string }>;
 }) => {
   const { error } = await searchParams;
 
+  return error === "invalid_code" ? (
+    <p
+      role="alert"
+      className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+    >
+      잘못된 인증 코드입니다. 다시 시도해 주세요.
+    </p>
+  ) : null;
+};
+
+const LoginPage = ({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) => {
   return (
     <main className="mx-auto flex w-full max-w-sm flex-1 items-center justify-center px-6">
       <form
@@ -38,14 +55,9 @@ const LoginPage = async ({
           />
         </div>
 
-        {error === "invalid_code" ? (
-          <p
-            role="alert"
-            className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
-          >
-            잘못된 인증 코드입니다. 다시 시도해 주세요.
-          </p>
-        ) : null}
+        <Suspense fallback={null}>
+          <ErrorNotice searchParams={searchParams} />
+        </Suspense>
 
         <button
           type="submit"

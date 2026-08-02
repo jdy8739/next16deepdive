@@ -4,11 +4,16 @@ interface InsightData {
 }
 
 const ArchiveInsightPage = async () => {
-  const response = await fetch("http://localhost:3000/api/insight", {
-    cache: "force-cache",
-  });
-
-  const data: InsightData = await response.json();
+  // NOTE(cacheComponents): self 절대URL(`http://localhost:3000/api/insight`) fetch 가
+  // 캐시 컴포넌트 프리렌더에서 uncached/실패 를 유발해 주석 처리함.
+  // const response = await fetch("http://localhost:3000/api/insight", {
+  //   cache: "force-cache",
+  // });
+  // const data: InsightData = await response.json();
+  const data: InsightData = {
+    quote: "아키텍트는 미래를 설계하는 청사진가다.",
+    servedAt: "1970-01-01T00:00:00.000Z",
+  };
 
   return (
     <main className="mx-auto w-full max-w-2xl px-6 py-14">

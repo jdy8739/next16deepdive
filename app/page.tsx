@@ -1,8 +1,11 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import FocusModeButton from "./components/FocusModeButton";
 import { cookies } from "next/headers";
 
-export default async function Home() {
+// NOTE(cacheComponents): `cookies()` 는 uncached runtime data 로 취급되어
+// Suspense 안에서만 접근해야 한다.
+const HomeContent = async () => {
   const cookieStore = await cookies();
   const focusmode =
     cookieStore.get("focusmode")?.value === "focused" ? "focused" : "blured";
@@ -31,5 +34,19 @@ export default async function Home() {
         Instance 3
       </Link>
     </main>
+  );
+};
+
+export default function Home() {
+  return (
+    <Suspense
+      fallback={
+        <main className="flex flex-1 items-center justify-center">
+          <p className="text-sm text-zinc-400">Loading...</p>
+        </main>
+      }
+    >
+      <HomeContent />
+    </Suspense>
   );
 }
