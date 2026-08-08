@@ -56,11 +56,11 @@ const db = {
     "둔한 도구보다 날카로운 사고가 먼저다.",
   ],
   boardSuggestions: [
-    { id: "s1", boardId: "1", content: "다크모드를 지원해 주세요.", createdAt: "2026-07-01T09:00:00.000Z" },
-    { id: "s2", boardId: "1", content: "페이지네이션 추가가 필요합니다.", createdAt: "2026-07-02T10:30:00.000Z" },
-    { id: "s3", boardId: "1", content: "단축키를 개선해 주세요.", createdAt: "2026-07-03T11:45:00.000Z" },
-    { id: "s4", boardId: "2", content: "API 문서를 더 풍부하게.", createdAt: "2026-07-04T13:20:00.000Z" },
-    { id: "s5", boardId: "2", content: "오프라인 모드를 지원해 주세요.", createdAt: "2026-07-05T15:05:00.000Z" },
+    { id: "s1", boardId: "1", content: "다크모드를 지원해 주세요.", createdAt: "2026-07-01T09:00:00.000Z", likeCount: 12 },
+    { id: "s2", boardId: "1", content: "페이지네이션 추가가 필요합니다.", createdAt: "2026-07-02T10:30:00.000Z", likeCount: 8 },
+    { id: "s3", boardId: "1", content: "단축키를 개선해 주세요.", createdAt: "2026-07-03T11:45:00.000Z", likeCount: 5 },
+    { id: "s4", boardId: "2", content: "API 문서를 더 풍부하게.", createdAt: "2026-07-04T13:20:00.000Z", likeCount: 21 },
+    { id: "s5", boardId: "2", content: "오프라인 모드를 지원해 주세요.", createdAt: "2026-07-05T15:05:00.000Z", likeCount: 3 },
   ],
   courseReviews: [
     { id: "r1", courseId: "1", author: "김민수", rating: 5, content: "Next.js 캐시 원리가 확실히 이해됐습니다.", createdAt: "2026-06-10T09:00:00.000Z" },

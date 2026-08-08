@@ -1,12 +1,15 @@
 "use cache";
 
 import { deleteBoardSuggestion, getBoardSuggestions } from "@/app/actions";
+import { cacheLife, cacheTag } from "next/cache";
+import LikeButton from "./LikeButton";
 
 interface Suggestion {
   id: string;
   boardId: string;
   content: string;
   createdAt: string;
+  likeCount: number;
 }
 
 const SuggestionList = async ({
@@ -14,12 +17,16 @@ const SuggestionList = async ({
 }: {
   params: Promise<{ id: string }>;
 }) => {
+  cacheLife("minutes");
+
   await new Promise((res) => {
     setTimeout(res, 500);
   });
 
   // 부모가 넘긴 params(Promise)를 여기서 해제한다.
   const { id } = await params;
+
+  cacheTag(`board-${id}-suggestions`);
 
   // `/api/board/[id]` 라우트 fetch 대신, 삭제 서버 액션과 동일한 db 인스턴스를 쓰는
   // 서버 액션(getBoardSuggestions)으로 직접 조회한다 — 인스턴스 분리 없이 일관.
@@ -48,25 +55,36 @@ const SuggestionList = async ({
           {suggestions.map((suggestion) => (
             <li
               key={suggestion.id}
-              className="flex items-start justify-between gap-4 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
+              className="group rounded-xl border border-zinc-200 bg-white p-4 shadow-sm transition-all hover:border-zinc-300 hover:shadow-md"
             >
-              <div className="min-w-0">
-                <p className="text-zinc-900">{suggestion.content}</p>
-                <p className="mt-1.5 text-xs text-zinc-400">
+              <p className="text-[15px] leading-relaxed text-zinc-900">
+                {suggestion.content}
+              </p>
+              <div className="mt-3 flex items-center justify-between border-t border-zinc-100 pt-3">
+                <p className="text-xs text-zinc-400">
                   {new Date(suggestion.createdAt).toLocaleString()}
                 </p>
+                <div className="flex items-center gap-1.5">
+                  <LikeButton
+                    likeCount={suggestion.likeCount}
+                    suggestionId={suggestion.id}
+                  />
+                  <form
+                    action={deleteBoardSuggestion.bind(
+                      null,
+                      id,
+                      suggestion.id,
+                    )}
+                  >
+                    <button
+                      type="submit"
+                      className="cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium text-zinc-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                    >
+                      삭제
+                    </button>
+                  </form>
+                </div>
               </div>
-              <form
-                action={deleteBoardSuggestion.bind(null, id, suggestion.id)}
-                className="shrink-0"
-              >
-                <button
-                  type="submit"
-                  className="cursor-pointer rounded-lg bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-100"
-                >
-                  삭제
-                </button>
-              </form>
             </li>
           ))}
         </ul>

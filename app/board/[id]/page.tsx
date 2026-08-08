@@ -1,14 +1,12 @@
 import { Suspense } from "react";
+import BoardHeader from "./BoardHeader";
 import SuggestionList from "./SuggestionList";
+import VipButtonServer from "./VipButtonServer";
 
 // NOTE(cacheComponents): `params` 는 uncached runtime data 로 취급된다.
 // 부모에서 await 하지 않고 Promise 그대로 자식에게 넘겨, 자식(<Suspense> 보호 구간)이
 // 해제하도록 하는 "방호벽" 패턴이다.
-const BoardPage = async ({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) => {
+const BoardPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   return (
     <main className="mx-auto w-full max-w-2xl px-6 py-14">
       <Suspense
@@ -24,6 +22,10 @@ const BoardPage = async ({
           </div>
         }
       >
+        <BoardHeader params={params} />
+        <div className="mb-4">
+          <VipButtonServer />
+        </div>
         <SuggestionList params={params} />
       </Suspense>
     </main>
